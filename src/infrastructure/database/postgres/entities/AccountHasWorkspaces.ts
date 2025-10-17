@@ -1,14 +1,15 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { Accounts } from "./Accounts";
+import { Workspaces } from "./Workspaces";
 
 @Index(
-  "unique_account_id_name_deleted_at",
-  ["accountId", "deletedAt", "name"],
+  "INDEX_account_has_workspace_account_id_workspace_id",
+  ["accountId", "workspaceId"],
   { unique: true }
 )
-@Index("pk_account_parameters", ["id"], { unique: true })
-@Entity("account_parameters", { schema: "public" })
-export class AccountParameters {
+@Index("PK_account_has_workspaces_id", ["id"], { unique: true })
+@Entity("account_has_workspaces", { schema: "public" })
+export class AccountHasWorkspaces {
   @Column("uuid", {
     primary: true,
     name: "id",
@@ -19,11 +20,15 @@ export class AccountParameters {
   @Column("uuid", { name: "account_id", nullable: true })
   accountId: string | null;
 
-  @Column("character varying", { name: "name", nullable: true, length: 255 })
-  name: string | null;
+  @Column("uuid", { name: "workspace_id", nullable: true })
+  workspaceId: string | null;
 
-  @Column("jsonb", { name: "data", nullable: true })
-  data: object | null;
+  @Column("boolean", {
+    name: "is_default",
+    nullable: true,
+    default: () => "false",
+  })
+  isDefault: boolean | null;
 
   @Column("boolean", {
     name: "is_active",
@@ -49,10 +54,18 @@ export class AccountParameters {
   @Column("timestamp without time zone", { name: "deleted_at", nullable: true })
   deletedAt: Date | null;
 
-  @ManyToOne(() => Accounts, (accounts) => accounts.accountParameters, {
+  @ManyToOne(() => Accounts, (accounts) => accounts.accountHasWorkspaces, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
   })
   @JoinColumn([{ name: "account_id", referencedColumnName: "id" }])
   account: Accounts;
+
+  @ManyToOne(
+    () => Workspaces,
+    (workspaces) => workspaces.accountHasWorkspaces,
+    { onDelete: "CASCADE", onUpdate: "CASCADE" }
+  )
+  @JoinColumn([{ name: "workspace_id", referencedColumnName: "id" }])
+  workspace: Workspaces;
 }

@@ -10,7 +10,7 @@ export class AccountParameterMapper
   toDomain(entity: AccountParameters): AccountParameterModel {
     return new AccountParameterModel({
       id: entity.id,
-      accountId: entity.accountId,
+      accountId: entity.accountId ?? undefined,
       name: entity.name,
       data: entity.data,
       isActive: entity.isActive ?? true,

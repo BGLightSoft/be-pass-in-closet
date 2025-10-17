@@ -1,14 +1,14 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
-import { Accounts } from "./Accounts";
+import { CredentialGroupTypes } from "./CredentialGroupTypes";
 
 @Index(
-  "unique_account_id_name_deleted_at",
-  ["accountId", "deletedAt", "name"],
+  "INDEX_credentials_id_credential_group_id",
+  ["credentialGroupTypeId", "id"],
   { unique: true }
 )
-@Index("pk_account_parameters", ["id"], { unique: true })
-@Entity("account_parameters", { schema: "public" })
-export class AccountParameters {
+@Index("PK_credential_parameter_list_id", ["id"], { unique: true })
+@Entity("credential_parameter_list", { schema: "public" })
+export class CredentialParameterList {
   @Column("uuid", {
     primary: true,
     name: "id",
@@ -16,8 +16,8 @@ export class AccountParameters {
   })
   id: string;
 
-  @Column("uuid", { name: "account_id", nullable: true })
-  accountId: string | null;
+  @Column("uuid", { name: "credential_group_type_id", nullable: true })
+  credentialGroupTypeId: string | null;
 
   @Column("character varying", { name: "name", nullable: true, length: 255 })
   name: string | null;
@@ -49,10 +49,13 @@ export class AccountParameters {
   @Column("timestamp without time zone", { name: "deleted_at", nullable: true })
   deletedAt: Date | null;
 
-  @ManyToOne(() => Accounts, (accounts) => accounts.accountParameters, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-  })
-  @JoinColumn([{ name: "account_id", referencedColumnName: "id" }])
-  account: Accounts;
+  @ManyToOne(
+    () => CredentialGroupTypes,
+    (credentialGroupTypes) => credentialGroupTypes.credentialParameterLists,
+    { onDelete: "CASCADE", onUpdate: "CASCADE" }
+  )
+  @JoinColumn([
+    { name: "credential_group_type_id", referencedColumnName: "id" },
+  ])
+  credentialGroupType: CredentialGroupTypes;
 }

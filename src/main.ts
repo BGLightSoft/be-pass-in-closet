@@ -27,12 +27,8 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new ResponseInterceptor());
 
-  app.use(compression());
   app.use(helmet());
 
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
-function compression(): any {
-  throw new Error('Function not implemented.');
-}
