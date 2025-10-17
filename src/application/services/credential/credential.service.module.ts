@@ -9,12 +9,19 @@ import { GetCredentialsByGroupQueryService } from './query/get-credentials-by-gr
 import { GetCredentialParameterListByTypeQueryService } from './query/get-credential-parameter-list-by-type.query.service';
 import { GetCredentialParametersQueryService } from './query/get-credential-parameters.query.service';
 
+import { DeleteCredentialParametersCommandService } from './command/delete-credential-parameters.command.service';
+import { DeleteCredentialsByGroupCommandService } from './command/delete-credentials-by-group.command.service';
+import { DeleteCredentialsByWorkspaceCommandService } from './command/delete-credentials-by-workspace.command.service';
+
 const command = [
   CreateCredentialCommandService,
   CreateCredentialParameterCommandService,
   UpdateCredentialCommandService,
   UpdateCredentialParameterCommandService,
   DeleteCredentialCommandService,
+  DeleteCredentialParametersCommandService,
+  DeleteCredentialsByGroupCommandService,
+  DeleteCredentialsByWorkspaceCommandService,
 ];
 
 const query = [

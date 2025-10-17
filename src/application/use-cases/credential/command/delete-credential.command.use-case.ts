@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { DeleteCredentialCommandResponseDto } from 'src/application/dtos/credential/response/command/delete-credential.command.response.dto';
 import { DeleteCredentialCommandService } from 'src/application/services/credential/command/delete-credential.command.service';
+import { DeleteCredentialParametersCommandService } from 'src/application/services/credential/command/delete-credential-parameters.command.service';
 import { GetCredentialByIdQueryService } from 'src/application/services/credential/query/get-credential-by-id.query.service';
 import { GetCredentialGroupByIdQueryService } from 'src/application/services/credential-group/query/get-credential-group-by-id.query.service';
 import { BusinessErrorException } from 'src/presentation/exceptions/business-error.exception';
@@ -13,6 +14,7 @@ export class DeleteCredentialCommandUseCase {
   constructor(
     private readonly dataSource: DataSource,
     private readonly deleteCredentialCommandService: DeleteCredentialCommandService,
+    private readonly deleteCredentialParametersCommandService: DeleteCredentialParametersCommandService,
     private readonly getCredentialByIdQueryService: GetCredentialByIdQueryService,
     private readonly getCredentialGroupByIdQueryService: GetCredentialGroupByIdQueryService,
   ) {}
@@ -54,6 +56,12 @@ export class DeleteCredentialCommandUseCase {
           CredentialErrorMessagesEnum.CREDENTIAL_ACCESS_DENIED,
         );
       }
+
+      // Soft delete credential parameters first
+      await this.deleteCredentialParametersCommandService.execute(
+        queryRunner,
+        credentialId,
+      );
 
       // Soft delete credential
       await this.deleteCredentialCommandService.execute(

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { CreateCredentialGroupCommandService } from './command/create-credential-group.command.service';
 import { UpdateCredentialGroupCommandService } from './command/update-credential-group.command.service';
 import { DeleteCredentialGroupCommandService } from './command/delete-credential-group.command.service';
+import { DeleteCredentialGroupCascadeCommandService } from './command/delete-credential-group-cascade.command.service';
 import { GetCredentialGroupTypeByNameQueryService } from './query/get-credential-group-type-by-name.query.service';
 import { GetCredentialGroupByIdQueryService } from './query/get-credential-group-by-id.query.service';
 import { GetCredentialGroupsByWorkspaceQueryService } from './query/get-credential-groups-by-workspace.query.service';
@@ -11,6 +12,7 @@ const command = [
   CreateCredentialGroupCommandService,
   UpdateCredentialGroupCommandService,
   DeleteCredentialGroupCommandService,
+  DeleteCredentialGroupCascadeCommandService,
 ];
 
 const query = [
