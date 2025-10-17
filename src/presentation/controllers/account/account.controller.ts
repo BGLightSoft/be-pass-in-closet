@@ -8,7 +8,12 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UpdateAccountRegistrationStatusCommandRequestDto } from 'src/application/dtos/account/response/command/update-account-registration-status.command.request.dto';
 import { UpdateAccountRegistrationStatusCommandResponseDto } from 'src/application/dtos/account/response/command/update-account-registration-status.command.response.dto';
 import { UpdateAccountCommandRequestDto } from 'src/application/dtos/account/request/command/update-account.command.request.dto';
@@ -28,6 +33,7 @@ import { AccountId } from 'src/presentation/decorators/account-id.decorator';
 import { AccessTokenGuard } from 'src/presentation/quards/auth/access-token.guard';
 import { GetMyAccountByIdQueryUseCase } from 'src/application/use-cases/account/query/get-my-account-by-id.query.use-case';
 
+@ApiTags('Account')
 @ApiBearerAuth()
 @Controller('account')
 export class AccountController {
@@ -41,6 +47,11 @@ export class AccountController {
     private readonly getMyAccountByIdQueryUseCase: GetMyAccountByIdQueryUseCase,
   ) {}
 
+  @ApiOperation({ summary: 'Update account password' })
+  @ApiOkResponse({
+    description: 'Password updated successfully',
+    type: UpdateAccountPasswordCommandResponseDto,
+  })
   @Put('password')
   public async updateAccountPassword(
     @AccountId() accountId: string,
@@ -49,6 +60,11 @@ export class AccountController {
     return this.updateAccountPasswordCommandUseCase.execute(accountId, body);
   }
 
+  @ApiOperation({ summary: 'Update account registration status' })
+  @ApiOkResponse({
+    description: 'Account registration status updated successfully',
+    type: UpdateAccountRegistrationStatusCommandResponseDto,
+  })
   @Put(':accountId/registration-status')
   public async updateAccountRegistrationStatus(
     @Param('accountId') accountId: string,
@@ -60,6 +76,11 @@ export class AccountController {
     );
   }
 
+  @ApiOperation({ summary: 'Update account parameters' })
+  @ApiOkResponse({
+    description: 'Account updated successfully',
+    type: UpdateAccountCommandResponseDto,
+  })
   @Patch(':accountId')
   public async updateAccount(
     @Param('accountId') accountId: string,
@@ -68,12 +89,22 @@ export class AccountController {
     return this.updateAccountCommandUseCase.execute(accountId, body);
   }
 
+  @ApiOperation({ summary: 'Get all accounts' })
+  @ApiOkResponse({
+    description: 'List of all accounts retrieved successfully',
+    type: [GetAllAccountsQueryResponseDto],
+  })
   @UseGuards(AccessTokenGuard)
   @Get()
   public async getAllAccounts(): Promise<GetAllAccountsQueryResponseDto[]> {
     return this.getAllAccountQueryUseCase.execute();
   }
 
+  @ApiOperation({ summary: 'Get my account information' })
+  @ApiOkResponse({
+    description: 'Current user account information retrieved successfully',
+    type: GetAccountQueryResponseDto,
+  })
   @UseGuards(AccessTokenGuard)
   @Get('my')
   public async getMyAccount(
@@ -82,6 +113,11 @@ export class AccountController {
     return this.getMyAccountByIdQueryUseCase.execute(accountId);
   }
 
+  @ApiOperation({ summary: 'Get account by ID' })
+  @ApiOkResponse({
+    description: 'Account information retrieved successfully',
+    type: GetAccountQueryResponseDto,
+  })
   @Get(':accountId')
   public async getOneAccount(
     @Param('accountId') accountId: string,
@@ -89,6 +125,11 @@ export class AccountController {
     return this.getOneAccountByIdQueryUseCase.execute(accountId);
   }
 
+  @ApiOperation({ summary: 'Delete account (soft delete)' })
+  @ApiOkResponse({
+    description: 'Account deleted successfully',
+    type: DeleteAccountCommandResponseDto,
+  })
   @Delete(':accountId')
   public async deleteAccount(
     @Param('accountId') accountId: string,

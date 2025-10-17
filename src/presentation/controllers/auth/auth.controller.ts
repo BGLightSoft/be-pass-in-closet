@@ -7,7 +7,12 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { LogInCommandRequestDto } from 'src/application/dtos/auth/request/command/log-in.command.request.dto';
 import { LogInCommandResponseDto } from 'src/application/dtos/auth/response/command/log-in.command.response.dto';
 import { SignUpCommandRequestDto } from 'src/application/dtos/auth/request/command/sign-up.command.request.dto';
@@ -34,6 +39,7 @@ import { SignUpVerifiedTokenGuard } from 'src/presentation/quards/auth/sign-up-v
 import { ForgotPasswordTokenGuard } from 'src/presentation/quards/auth/forgot-password-token.guard';
 import { GetTokenFromHeader } from 'src/presentation/decorators/get-token-from-header.decorator';
 
+@ApiTags('Authentication')
 @ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
@@ -46,6 +52,12 @@ export class AuthController {
     private readonly updateForgotPasswordCommandUseCase: UpdateForgotPasswordCommandUseCase,
   ) {}
 
+  @ApiOperation({ summary: 'Register a new user account' })
+  @ApiOkResponse({
+    description:
+      'User registered successfully, verification code sent to email',
+    type: SignUpCommandResponseDto,
+  })
   @SkipAuth()
   @Post('sign-up')
   async signup(
@@ -54,6 +66,11 @@ export class AuthController {
     return this.signUpCommandUseCase.execute(body);
   }
 
+  @ApiOperation({ summary: 'User login' })
+  @ApiOkResponse({
+    description: 'User logged in successfully, returns account info and tokens',
+    type: LogInCommandResponseDto,
+  })
   @SkipAuth()
   @UseGuards(
     AccountRegisteredStatusGuard,
@@ -67,6 +84,11 @@ export class AuthController {
     return this.logInCommandUseCase.execute(body);
   }
 
+  @ApiOperation({ summary: 'Verify user account with OTP code' })
+  @ApiOkResponse({
+    description: 'Account verified successfully',
+    type: SignUpVerifiedCommandResponseDto,
+  })
   @SkipAuth()
   @UseGuards(SignUpVerifiedTokenGuard)
   @Post('sign-up-verified')
@@ -77,6 +99,11 @@ export class AuthController {
     return this.signUpVerifiedCommandUseCase.execute(body, token);
   }
 
+  @ApiOperation({ summary: 'Refresh access token using refresh token' })
+  @ApiOkResponse({
+    description: 'New access and refresh tokens generated successfully',
+    type: RefreshTokenCommandResponseDto,
+  })
   @SkipAuth()
   @UseGuards(RefreshTokenGuard)
   @Post('refresh-token')
@@ -86,6 +113,11 @@ export class AuthController {
     return this.refreshTokenCommandUseCase.execute(token);
   }
 
+  @ApiOperation({ summary: 'Request password reset' })
+  @ApiOkResponse({
+    description: 'Password reset code sent to email',
+    type: ForgotPasswordCommandResponseDto,
+  })
   @SkipAuth()
   @Post('forgot-password')
   async forgotPassword(
@@ -94,6 +126,11 @@ export class AuthController {
     return this.forgotPasswordCommandUseCase.execute(body);
   }
 
+  @ApiOperation({ summary: 'Reset password with OTP code' })
+  @ApiOkResponse({
+    description: 'Password reset successfully',
+    type: UpdateForgotPasswordCommandResponseDto,
+  })
   @SkipAuth()
   @UseGuards(ForgotPasswordTokenGuard)
   @Put('forgot-password')
