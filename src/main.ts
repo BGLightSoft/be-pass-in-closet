@@ -25,6 +25,16 @@ async function bootstrap() {
     new BusinessErrorExceptionFilter(),
   );
 
+  app.enableCors({
+    origin: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['*'],
+    exposedHeaders: ['*'],
+    credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  });
+
   app.useGlobalInterceptors(new ResponseInterceptor());
 
   app.use(helmet());
