@@ -9,6 +9,7 @@ import { NotificationServiceModule } from './notification/notification.service.m
 import { WorkspaceServiceModule } from './workspace/workspace.service.module';
 import { CredentialGroupServiceModule } from './credential-group/credential-group.service.module';
 import { CredentialServiceModule } from './credential/credential.service.module';
+import { CredentialGroupTypeServiceModule } from './credential-group-type/credential-group-type.service.module';
 
 @Global()
 @Module({
@@ -23,6 +24,7 @@ import { CredentialServiceModule } from './credential/credential.service.module'
     WorkspaceServiceModule,
     CredentialGroupServiceModule,
     CredentialServiceModule,
+    CredentialGroupTypeServiceModule,
   ],
   exports: [
     HashServiceModule,
@@ -35,6 +37,7 @@ import { CredentialServiceModule } from './credential/credential.service.module'
     WorkspaceServiceModule,
     CredentialGroupServiceModule,
     CredentialServiceModule,
+    CredentialGroupTypeServiceModule,
   ],
 })
 export class ServicesModule {}

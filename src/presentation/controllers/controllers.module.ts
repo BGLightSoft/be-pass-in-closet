@@ -4,6 +4,7 @@ import { AuthController } from './auth/auth.controller';
 import { WorkspaceController } from './workspace/workspace.controller';
 import { CredentialGroupController } from './credential-group/credential-group.controller';
 import { CredentialController } from './credential/credential.controller';
+import { CredentialGroupTypeController } from './credential-group-type/credential-group-type.controller';
 
 @Module({
   controllers: [
@@ -12,6 +13,7 @@ import { CredentialController } from './credential/credential.controller';
     WorkspaceController,
     CredentialGroupController,
     CredentialController,
+    CredentialGroupTypeController,
   ],
 })
 export class ControllersModule {}
