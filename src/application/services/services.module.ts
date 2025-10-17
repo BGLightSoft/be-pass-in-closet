@@ -6,6 +6,7 @@ import { JwtTokenServiceModule } from './jwt/jwt-token.service.module';
 import { AuthServiceModule } from './auth/auth.service.module';
 import { AccountTokensServiceModule } from './account-tokens/account-tokens.service.module';
 import { NotificationServiceModule } from './notification/notification.service.module';
+import { WorkspaceServiceModule } from './workspace/workspace.service.module';
 
 @Global()
 @Module({
@@ -17,6 +18,7 @@ import { NotificationServiceModule } from './notification/notification.service.m
     AuthServiceModule,
     AccountTokensServiceModule,
     NotificationServiceModule,
+    WorkspaceServiceModule,
   ],
   exports: [
     HashServiceModule,
@@ -26,6 +28,7 @@ import { NotificationServiceModule } from './notification/notification.service.m
     AuthServiceModule,
     AccountTokensServiceModule,
     NotificationServiceModule,
+    WorkspaceServiceModule,
   ],
 })
-export class ServicesModule { }
+export class ServicesModule {}

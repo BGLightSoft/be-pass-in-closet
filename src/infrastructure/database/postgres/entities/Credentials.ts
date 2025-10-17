@@ -1,5 +1,6 @@
 import {
   Column,
+  DeleteDateColumn,
   Entity,
   Index,
   JoinColumn,
@@ -49,7 +50,7 @@ export class Credentials {
   })
   updatedAt: Date | null;
 
-  @Column("timestamp without time zone", { name: "deleted_at", nullable: true })
+  @DeleteDateColumn({ name: "deleted_at", nullable: true })
   deletedAt: Date | null;
 
   @OneToMany(

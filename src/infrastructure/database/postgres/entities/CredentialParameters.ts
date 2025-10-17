@@ -1,4 +1,4 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import { Column, DeleteDateColumn, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { Credentials } from "./Credentials";
 
 @Index("INDEX_credential_parameters_credential_id", ["credentialId", "name"], {
@@ -44,7 +44,7 @@ export class CredentialParameters {
   })
   updatedAt: Date | null;
 
-  @Column("timestamp without time zone", { name: "deleted_at", nullable: true })
+  @DeleteDateColumn({ name: "deleted_at", nullable: true })
   deletedAt: Date | null;
 
   @ManyToOne(

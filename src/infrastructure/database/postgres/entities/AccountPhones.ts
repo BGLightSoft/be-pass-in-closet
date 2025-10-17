@@ -1,4 +1,4 @@
-import { Column, Entity, Index, JoinColumn, OneToOne } from "typeorm";
+import { Column, DeleteDateColumn, Entity, Index, JoinColumn, OneToOne } from "typeorm";
 import { Accounts } from "./Accounts";
 
 @Index("UQ_33409f44928f39805eb64d6497a", ["accountId"], { unique: true })
@@ -57,7 +57,7 @@ export class AccountPhones {
   })
   updatedAt: Date | null;
 
-  @Column("timestamp without time zone", { name: "deleted_at", nullable: true })
+  @DeleteDateColumn({ name: "deleted_at", nullable: true })
   deletedAt: Date | null;
 
   @OneToOne(() => Accounts, (accounts) => accounts.accountPhones, {

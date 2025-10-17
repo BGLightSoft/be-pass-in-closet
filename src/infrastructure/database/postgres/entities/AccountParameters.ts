@@ -1,4 +1,4 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import { Column, DeleteDateColumn, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { Accounts } from "./Accounts";
 
 @Index(
@@ -46,7 +46,7 @@ export class AccountParameters {
   })
   updatedAt: Date | null;
 
-  @Column("timestamp without time zone", { name: "deleted_at", nullable: true })
+  @DeleteDateColumn({ name: "deleted_at", nullable: true })
   deletedAt: Date | null;
 
   @ManyToOne(() => Accounts, (accounts) => accounts.accountParameters, {

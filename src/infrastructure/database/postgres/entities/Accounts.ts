@@ -1,4 +1,4 @@
-import { Column, Entity, Index, OneToMany, OneToOne } from "typeorm";
+import { Column, DeleteDateColumn, Entity, Index, OneToMany, OneToOne } from "typeorm";
 import { AccountHasWorkspaces } from "./AccountHasWorkspaces";
 import { AccountParameters } from "./AccountParameters";
 import { AccountPhones } from "./AccountPhones";
@@ -62,7 +62,7 @@ export class Accounts {
   })
   updatedAt: Date | null;
 
-  @Column("timestamp without time zone", { name: "deleted_at", nullable: true })
+  @DeleteDateColumn({ name: "deleted_at", nullable: true })
   deletedAt: Date | null;
 
   @OneToMany(

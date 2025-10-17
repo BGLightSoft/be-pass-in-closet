@@ -1,4 +1,4 @@
-import { Column, Entity, Index, OneToMany } from "typeorm";
+import { Column, DeleteDateColumn, Entity, Index, OneToMany } from "typeorm";
 import { CredentialGroups } from "./CredentialGroups";
 import { CredentialParameterList } from "./CredentialParameterList";
 
@@ -36,7 +36,7 @@ export class CredentialGroupTypes {
   })
   updatedAt: Date | null;
 
-  @Column("timestamp without time zone", { name: "deleted_at", nullable: true })
+  @DeleteDateColumn({ name: "deleted_at", nullable: true })
   deletedAt: Date | null;
 
   @OneToMany(
