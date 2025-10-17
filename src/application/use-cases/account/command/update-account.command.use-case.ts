@@ -3,7 +3,8 @@ import { AccountModel } from 'src/domain/models/account/account.model';
 import { UpdateAccountCommandService } from 'src/application/services/account/command/update-account.command.service';
 import { GetOneAccountByIdQueryService } from 'src/application/services/account/query/get-one-account-by-id.query.service';
 import { DataSource } from 'typeorm';
-import { UpdateAccountDto } from 'src/application/dtos/account/request/command/update-account.dto';
+import { UpdateAccountCommandRequestDto } from 'src/application/dtos/account/request/command/update-account.command.request.dto';
+import { UpdateAccountCommandResponseDto } from 'src/application/dtos/account/response/command/update-account.command.response.dto';
 import { UpdateAccountParameterCommandService } from 'src/application/services/account/command/update-account-parameter.command.service';
 import { BusinessErrorException } from 'src/presentation/exceptions/business-error.exception';
 import { AccountErrorMessagesEnum } from 'src/domain/enums/error-messages/account-error-messages.enum';
@@ -18,8 +19,8 @@ export class UpdateAccountCommandUseCase {
   ) {}
   public async execute(
     accountId: string,
-    body: UpdateAccountDto,
-  ): Promise<AccountModel | null> {
+    body: UpdateAccountCommandRequestDto,
+  ): Promise<UpdateAccountCommandResponseDto | null> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -33,15 +34,7 @@ export class UpdateAccountCommandUseCase {
         );
       }
 
-      const { account, accountParameters } = body;
-
-      if (account && Object.keys(account).length > 0) {
-        await this.updateAccountCommandService.execute(
-          queryRunner,
-          accountId,
-          account,
-        );
-      }
+      const { accountParameters } = body;
 
       if (accountParameters) {
         await this.updateAccountParameterCommandService.execute(
@@ -56,7 +49,9 @@ export class UpdateAccountCommandUseCase {
       const updatedAccountModel: AccountModel | null =
         await this.getOneAccountByIdQueryService.execute(accountId);
 
-      return updatedAccountModel;
+      if (!updatedAccountModel) return null;
+
+      return new UpdateAccountCommandResponseDto(updatedAccountModel);
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

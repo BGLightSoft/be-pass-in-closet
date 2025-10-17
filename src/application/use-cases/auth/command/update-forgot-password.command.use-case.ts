@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { JwtTokenService } from 'src/application/services/jwt/jwt-token.service';
-import { UpdateForgotPasswordDto } from 'src/application/dtos/auth/update-forgot-password.dto';
+import { UpdateForgotPasswordCommandRequestDto } from 'src/application/dtos/auth/response/command/update-forgot-password.command.request.dto';
+import { UpdateForgotPasswordCommandResponseDto } from 'src/application/dtos/auth/response/command/update-forgot-password.command.response.dto';
 import { IForgotPasswordtoken } from 'src/domain/tokens/forgot-password-token-payload.interface';
 import { UpdateAccountPasswordCommandService } from 'src/application/services/account/command/update-account-password.command.service';
 import { OtpCodeModel } from 'src/domain/models/otp/otp-code.model';
@@ -23,7 +24,10 @@ export class UpdateForgotPasswordCommandUseCase {
     private readonly deleteOtpCodeCommandService: DeleteOtpCodeCommandService,
     private readonly deleteTokenByTypeCommandService: DeleteTokenByTypeCommandService,
   ) {}
-  public async execute(body: UpdateForgotPasswordDto, token: string | null) {
+  public async execute(
+    body: UpdateForgotPasswordCommandRequestDto,
+    token: string | null,
+  ): Promise<UpdateForgotPasswordCommandResponseDto> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -76,7 +80,7 @@ export class UpdateForgotPasswordCommandUseCase {
         AccountTokenTypeEnum.FORGOT_PASSWORD_TOKEN,
       );
 
-      return true;
+      return new UpdateForgotPasswordCommandResponseDto(true);
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;
