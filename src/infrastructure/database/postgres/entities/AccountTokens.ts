@@ -10,10 +10,10 @@ export class AccountTokens {
     default: () => 'gen_random_uuid()',
   })
   id: string;
-  @Column('uuid', {
-    name: 'account_id',
-  })
+
+  @Column('uuid', { name: 'account_id' })
   accountId: string;
+
   @Column('character varying', { name: 'type', nullable: true, length: 255 })
   type: string | null;
 
@@ -44,5 +44,5 @@ export class AccountTokens {
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'account_id', referencedColumnName: 'id' }])
-  accounts: Accounts;
+  account: Accounts;
 }

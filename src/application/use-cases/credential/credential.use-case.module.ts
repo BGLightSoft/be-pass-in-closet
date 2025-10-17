@@ -1,0 +1,19 @@
+import { Module } from '@nestjs/common';
+import { CreateCredentialCommandUseCase } from './command/create-credential.command.use-case';
+import { UpdateCredentialCommandUseCase } from './command/update-credential.command.use-case';
+import { DeleteCredentialCommandUseCase } from './command/delete-credential.command.use-case';
+import { GetCredentialsByGroupQueryUseCase } from './query/get-credentials-by-group.query.use-case';
+
+const query = [GetCredentialsByGroupQueryUseCase];
+
+const command = [
+  CreateCredentialCommandUseCase,
+  UpdateCredentialCommandUseCase,
+  DeleteCredentialCommandUseCase,
+];
+
+@Module({
+  providers: [...query, ...command],
+  exports: [...query, ...command],
+})
+export class CredentialUseCaseModule {}

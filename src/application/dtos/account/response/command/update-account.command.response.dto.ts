@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AccountModel } from 'src/domain/models/account/account.model';
+import { AccountParameterResponseDto } from '../account-parameter.response.dto';
 
 export class UpdateAccountCommandResponseDto {
   @ApiProperty()
@@ -26,8 +27,8 @@ export class UpdateAccountCommandResponseDto {
   @ApiProperty()
   updatedAt: Date;
 
-  @ApiProperty()
-  accountParameters?: any[];
+  @ApiProperty({ type: Object, nullable: true })
+  accountParameters?: Record<string, any>;
 
   constructor(model: AccountModel) {
     this.id = model.id!;
@@ -38,6 +39,8 @@ export class UpdateAccountCommandResponseDto {
     this.verifiedAt = model.verifiedAt;
     this.createdAt = model.createdAt;
     this.updatedAt = model.updatedAt;
-    this.accountParameters = model.accountParameters;
+    this.accountParameters = model.accountParameters
+      ? AccountParameterResponseDto.fromModels(model.accountParameters)
+      : undefined;
   }
 }

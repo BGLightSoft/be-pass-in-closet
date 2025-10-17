@@ -6,7 +6,7 @@ import { OtpCodes } from 'src/infrastructure/database/postgres/entities/OtpCodes
 export class OtpCodeMapper implements IMapper<OtpCodes, OtpCodeModel> {
   toDomain(entity: OtpCodes): OtpCodeModel {
     return new OtpCodeModel({
-      accountId: entity.accounts?.id ?? '',
+      accountId: entity.accountId,
       type: entity.type as OtpCodeTypeEnum,
       code: entity.code,
       usedAt: entity.usedAt ? new Date(entity.usedAt) : null,
@@ -17,12 +17,13 @@ export class OtpCodeMapper implements IMapper<OtpCodes, OtpCodeModel> {
 
   toEntity(domain: OtpCodeModel): OtpCodes {
     const entity = new OtpCodes();
+    entity.accountId = domain.accountId;
     entity.type = domain.type;
     entity.code = domain.code;
     entity.usedAt = domain.usedAt ?? null;
     entity.expireAt = domain.expireAt ?? null;
     entity.createdAt = domain.createdAt;
-    entity.accounts = { id: domain.accountId } as any;
+    entity.account = { id: domain.accountId } as any;
     return entity;
   }
 }

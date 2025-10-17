@@ -9,7 +9,7 @@ export class AccountTokenMapper
   toDomain(entity: AccountTokens): AccountTokenModel {
     return new AccountTokenModel({
       id: entity.id,
-      accountId: entity.accounts?.id ?? '',
+      accountId: entity.accountId,
       type: entity.type as AccountTokenTypeEnum,
       tokenableId: entity.tokenableId,
       token: entity.token,
@@ -21,13 +21,14 @@ export class AccountTokenMapper
 
   toEntity(domain: AccountTokenModel): AccountTokens {
     const entity = new AccountTokens();
+    entity.accountId = domain.accountId;
     entity.type = domain.type;
     entity.tokenableId = domain.tokenableId;
     entity.token = domain.token;
     entity.expireAt = domain.expireAt ?? null;
     entity.lastUsedAt = domain.lastUsedAt ?? null;
     entity.createdAt = domain.createdAt;
-    entity.accounts = { id: domain.accountId } as any;
+    entity.account = { id: domain.accountId } as any;
     return entity;
   }
 }

@@ -11,7 +11,7 @@ export class OtpCodes {
   })
   id: string;
 
-  @Column({ name: 'account_id' })
+  @Column('uuid', { name: 'account_id' })
   accountId: string;
 
   @Column('character varying', { name: 'type', nullable: true, length: 255 })
@@ -34,5 +34,5 @@ export class OtpCodes {
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'account_id', referencedColumnName: 'id' }])
-  accounts: Accounts;
+  account: Accounts;
 }
