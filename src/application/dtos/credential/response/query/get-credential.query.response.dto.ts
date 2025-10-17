@@ -20,10 +20,10 @@ export class GetCredentialQueryResponseDto {
   @ApiProperty()
   updatedAt: Date;
 
-  @ApiProperty({ type: [Object], nullable: true })
-  parameters?: any[];
+  @ApiProperty({ type: Object, nullable: true })
+  parameters?: Record<string, any>;
 
-  constructor(model: CredentialModel, parameters?: any[]) {
+  constructor(model: CredentialModel, parameters?: Record<string, any>) {
     this.id = model.id!;
     this.credentialGroupId = model.credentialGroupId;
     this.name = model.name;

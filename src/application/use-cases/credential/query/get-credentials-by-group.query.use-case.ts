@@ -3,6 +3,7 @@ import { GetCredentialsByGroupQueryService } from 'src/application/services/cred
 import { GetCredentialParametersQueryService } from 'src/application/services/credential/query/get-credential-parameters.query.service';
 import { GetCredentialGroupByIdQueryService } from 'src/application/services/credential-group/query/get-credential-group-by-id.query.service';
 import { GetCredentialQueryResponseDto } from 'src/application/dtos/credential/response/query/get-credential.query.response.dto';
+import { CredentialParameterResponseDto } from 'src/application/dtos/credential/response/credential-parameter.response.dto';
 import { BusinessErrorException } from 'src/presentation/exceptions/business-error.exception';
 import { CredentialGroupErrorMessagesEnum } from 'src/domain/enums/error-messages/credential-group-error-messages.enum';
 
@@ -44,10 +45,15 @@ export class GetCredentialsByGroupQueryUseCase {
       // Get parameters for each credential
       const credentialsWithParameters = await Promise.all(
         credentials.map(async (credential) => {
-          const parameters =
+          const parameterModels =
             await this.getCredentialParametersQueryService.execute(
               credential.id!,
             );
+
+          // Transform parameters to clean format
+          const parameters =
+            CredentialParameterResponseDto.fromModelsArray(parameterModels);
+
           return new GetCredentialQueryResponseDto(credential, parameters);
         }),
       );
