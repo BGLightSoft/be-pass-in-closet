@@ -6,6 +6,7 @@ import { GlobalExceptionFilter } from './presentation/filters/global-exception.f
 import { BusinessErrorExceptionFilter } from './presentation/filters/business-error-exception.filter';
 import { ValidationError, ValidationPipe } from '@nestjs/common';
 import { BusinessErrorException } from './presentation/exceptions/business-error.exception';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,6 +27,12 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new ResponseInterceptor());
 
+  app.use(compression());
+  app.use(helmet());
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
+function compression(): any {
+  throw new Error('Function not implemented.');
+}

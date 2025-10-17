@@ -4,8 +4,8 @@
     "type": "postgres",
     "host": "localhost",
     "port": 5432,
-    "username": "dumanargeyazilim",
-    "password": "OXhaKaiany3H5wnpnHqs",
+    "username": "",
+    "password": "",
     "database": "",
     "synchronize": false,
     "entities": ["entities/*.js"]
