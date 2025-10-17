@@ -15,6 +15,7 @@ import { MailSenderCommandService } from 'src/application/services/notification/
 import { GetAccountByEmailQueryService } from 'src/application/services/account/query/get-account-by-email.query.service';
 import { BusinessErrorException } from 'src/presentation/exceptions/business-error.exception';
 import { AccountErrorMessagesEnum } from 'src/domain/enums/error-messages/account-error-messages.enum';
+import { OtpCodeModel } from 'src/domain/models/otp/otp-code.model';
 
 @Injectable()
 export class SignUpCommandUseCase {
@@ -60,12 +61,13 @@ export class SignUpCommandUseCase {
         [{ firstName, lastName }],
       );
 
-      const signupOtpCodeModel = await this.createOtpCodeCommandService.execute(
-        queryRunner,
-        createdAccountModel.id,
-        OtpCodeTypeEnum.SIGN_UP,
-        OtpCodeExpireMinuteTimeEnum.SIGN_UP,
-      );
+      const signupOtpCodeModel: OtpCodeModel =
+        await this.createOtpCodeCommandService.execute(
+          queryRunner,
+          createdAccountModel.id,
+          OtpCodeTypeEnum.SIGN_UP,
+          OtpCodeExpireMinuteTimeEnum.SIGN_UP,
+        );
 
       const signUpVerifiedToken: string =
         this.jwtTokenService.generateSignUpVerifiedToken({

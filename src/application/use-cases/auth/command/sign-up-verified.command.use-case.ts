@@ -12,6 +12,7 @@ import { BusinessErrorException } from 'src/presentation/exceptions/business-err
 import { DeleteTokenByTypeCommandService } from 'src/application/services/account-tokens/command/delete-token-by-type.command.service';
 import { DeleteOtpCodeCommandService } from 'src/application/services/otp/command/delete-otp-code.command.service';
 import { AccountTokenTypeEnum } from 'src/domain/enums/account/account-token-type.enum';
+import { RegistrationStatusEnum } from 'src/domain/enums/account/registration-status.enum';
 
 @Injectable()
 export class SignUpVerifiedCommandUseCase {
@@ -54,6 +55,7 @@ export class SignUpVerifiedCommandUseCase {
 
       await this.updateAccountCommandService.execute(queryRunner, accountId, {
         verifiedAt: new Date(),
+        registrationStatus: RegistrationStatusEnum.ACCEPTED,
       });
 
       await queryRunner.commitTransaction();
