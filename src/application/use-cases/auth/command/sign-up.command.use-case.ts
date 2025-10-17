@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { SignUpDto } from 'src/application/dtos/auth/sign-up.dto';
+import { SignUpCommandRequestDto } from 'src/application/dtos/auth/request/command/sign-up.command.request.dto';
+import { SignUpCommandResponseDto } from 'src/application/dtos/auth/response/command/sign-up.command.response.dto';
 import { CreateAccountParameterCommandService } from 'src/application/services/account/command/create-account-parameter.command.service';
 import { CreateAccountCommandService } from 'src/application/services/account/command/create-account.command.service';
 import { AccountModel } from 'src/domain/models/account/account.model';
@@ -29,7 +30,9 @@ export class SignUpCommandUseCase {
     private readonly mailSenderCommandService: MailSenderCommandService,
     private readonly getAccountByEmailQueryService: GetAccountByEmailQueryService,
   ) {}
-  public async execute(body: SignUpDto) {
+  public async execute(
+    body: SignUpCommandRequestDto,
+  ): Promise<SignUpCommandResponseDto> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -97,7 +100,7 @@ export class SignUpCommandUseCase {
       await this.mailSenderCommandService.mailSender(mailInfo);
       await queryRunner.commitTransaction();
 
-      return { signUpVerifiedToken };
+      return new SignUpCommandResponseDto(signUpVerifiedToken);
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

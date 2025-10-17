@@ -7,7 +7,7 @@ import {
   MaxLength,
 } from 'class-validator';
 
-export class SignUpDto {
+export class SignUpCommandRequestDto {
   @ApiProperty({ default: 'test@gmail.com' })
   @IsEmail({}, { message: 'Please enter a valid email address.' })
   email: string;

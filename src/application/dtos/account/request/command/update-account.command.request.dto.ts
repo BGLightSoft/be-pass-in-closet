@@ -1,15 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AccountDto } from '../base/account.dto';
 
-export class UpdateAccountDto {
+export class UpdateAccountCommandRequestDto {
   @ApiProperty({
     default: {
       firstName: { value: 'Ali' },
       lastName: { value: 'Veli' },
     },
+    required: false,
   })
   accountParameters?: any;
-
-  @ApiProperty()
-  account?: AccountDto;
 }

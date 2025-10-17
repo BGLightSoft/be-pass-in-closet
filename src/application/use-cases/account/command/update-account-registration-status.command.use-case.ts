@@ -3,7 +3,8 @@ import { AccountModel } from 'src/domain/models/account/account.model';
 import { UpdateAccountCommandService } from 'src/application/services/account/command/update-account.command.service';
 import { GetOneAccountByIdQueryService } from 'src/application/services/account/query/get-one-account-by-id.query.service';
 import { DataSource } from 'typeorm';
-import { UpdateAccountRegistrationStatusDto } from 'src/application/dtos/account/request/command/update-account-registration-status.dto';
+import { UpdateAccountRegistrationStatusCommandRequestDto } from 'src/application/dtos/account/response/command/update-account-registration-status.command.request.dto';
+import { UpdateAccountRegistrationStatusCommandResponseDto } from 'src/application/dtos/account/response/command/update-account-registration-status.command.response.dto';
 import { BusinessErrorException } from 'src/presentation/exceptions/business-error.exception';
 import { AccountErrorMessagesEnum } from 'src/domain/enums/error-messages/account-error-messages.enum';
 
@@ -16,8 +17,8 @@ export class UpdateAccountRegistrationStatusCommandUseCase {
   ) {}
   public async execute(
     accountId: string,
-    body: UpdateAccountRegistrationStatusDto,
-  ): Promise<AccountModel> {
+    body: UpdateAccountRegistrationStatusCommandRequestDto,
+  ): Promise<UpdateAccountRegistrationStatusCommandResponseDto> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -45,7 +46,18 @@ export class UpdateAccountRegistrationStatusCommandUseCase {
 
       await queryRunner.commitTransaction();
 
-      return account;
+      const updatedAccount: AccountModel | null =
+        await this.getOneAccountByIdQueryService.execute(accountId);
+
+      if (!updatedAccount) {
+        throw new BusinessErrorException(
+          AccountErrorMessagesEnum.ACCOUNT_NOT_FOUND,
+        );
+      }
+
+      return new UpdateAccountRegistrationStatusCommandResponseDto(
+        updatedAccount,
+      );
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

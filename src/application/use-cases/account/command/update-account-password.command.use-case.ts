@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { AccountModel } from 'src/domain/models/account/account.model';
 import { GetOneAccountByIdQueryService } from 'src/application/services/account/query/get-one-account-by-id.query.service';
 import { DataSource } from 'typeorm';
-import { UpdateAccountPasswordDto } from 'src/application/dtos/account/request/command/update-account-password.dto';
+import { UpdateAccountPasswordCommandRequestDto } from 'src/application/dtos/account/request/command/update-account-password.command.request.dto';
+import { UpdateAccountPasswordCommandResponseDto } from 'src/application/dtos/account/response/command/update-account-password.command.response.dto';
 import { UpdateAccountPasswordCommandService } from 'src/application/services/account/command/update-account-password.command.service';
 import { HashService } from 'src/application/services/hash/hash.service';
 import { BusinessErrorException } from 'src/presentation/exceptions/business-error.exception';
@@ -18,8 +19,8 @@ export class UpdateAccountPasswordCommandUseCase {
   ) {}
   public async execute(
     accountId: string,
-    body: UpdateAccountPasswordDto,
-  ): Promise<boolean> {
+    body: UpdateAccountPasswordCommandRequestDto,
+  ): Promise<UpdateAccountPasswordCommandResponseDto> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -60,7 +61,7 @@ export class UpdateAccountPasswordCommandUseCase {
 
       await queryRunner.commitTransaction();
 
-      return true;
+      return new UpdateAccountPasswordCommandResponseDto(true);
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

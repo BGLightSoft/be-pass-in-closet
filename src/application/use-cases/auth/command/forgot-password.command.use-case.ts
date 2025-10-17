@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { GetAccountByEmailQueryService } from 'src/application/services/account/query/get-account-by-email.query.service';
 import { AccountModel } from 'src/domain/models/account/account.model';
-import { ForgotPasswordDto } from 'src/application/dtos/auth/forgot-password.dto';
+import { ForgotPasswordCommandRequestDto } from 'src/application/dtos/auth/request/command/forgot-password.command.request.dto';
+import { ForgotPasswordCommandResponseDto } from 'src/application/dtos/auth/response/command/forgot-password.command.response.dto';
 import { CreateTokenCommandService } from 'src/application/services/account-tokens/command/create-token.command.service';
 import { JwtTokenService } from 'src/application/services/jwt/jwt-token.service';
 import { AccountTokenTypeEnum } from 'src/domain/enums/account/account-token-type.enum';
@@ -22,7 +23,9 @@ export class ForgotPasswordCommandUseCase {
     private readonly createOtpCodeCommandService: CreateOtpCodeCommandService,
     private readonly mailSenderCommandService: MailSenderCommandService,
   ) {}
-  public async execute(body: ForgotPasswordDto) {
+  public async execute(
+    body: ForgotPasswordCommandRequestDto,
+  ): Promise<ForgotPasswordCommandResponseDto> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -32,7 +35,11 @@ export class ForgotPasswordCommandUseCase {
       const accountModel: AccountModel | any =
         await this.getAccountByEmailQueryService.execute(email);
 
-      if (!accountModel) return true;
+      if (!accountModel)
+        return new ForgotPasswordCommandResponseDto(
+          '',
+          'If the email exists, a reset code has been sent',
+        );
 
       const forgotPasswordToken: string =
         this.jwtTokenService.generateForgotPasswordToken({
@@ -70,7 +77,7 @@ export class ForgotPasswordCommandUseCase {
 
       await queryRunner.commitTransaction();
 
-      return { forgotPasswordToken };
+      return new ForgotPasswordCommandResponseDto(forgotPasswordToken);
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

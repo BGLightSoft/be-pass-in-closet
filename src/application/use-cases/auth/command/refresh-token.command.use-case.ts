@@ -7,6 +7,7 @@ import { GetAccountTokenQueryService } from 'src/application/services/account-to
 import { AccountTokenTypeEnum } from 'src/domain/enums/account/account-token-type.enum';
 import { DeleteAuthtokensCommandService } from 'src/application/services/account-tokens/command/delete-auth-tokens.command.service';
 import { CreateAuthtokensCommandService } from 'src/application/services/account-tokens/command/create-auth-tokens.command.service';
+import { RefreshTokenCommandResponseDto } from 'src/application/dtos/auth/response/command/refresh-token.command.response.dto';
 import { BusinessErrorException } from 'src/presentation/exceptions/business-error.exception';
 import { AccountErrorMessagesEnum } from 'src/domain/enums/error-messages/account-error-messages.enum';
 
@@ -19,7 +20,9 @@ export class RefreshTokenCommandUseCase {
     private readonly deleteAuthtokensCommandService: DeleteAuthtokensCommandService,
     private readonly createAuthtokensCommandService: CreateAuthtokensCommandService,
   ) {}
-  public async execute(refreshToken: string | null) {
+  public async execute(
+    refreshToken: string | null,
+  ): Promise<RefreshTokenCommandResponseDto> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -80,7 +83,10 @@ export class RefreshTokenCommandUseCase {
 
       await queryRunner.commitTransaction();
 
-      return authTokens;
+      return new RefreshTokenCommandResponseDto(
+        authTokens.accessToken,
+        authTokens.refreshToken,
+      );
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

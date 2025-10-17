@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import { AccountModel } from 'src/domain/models/account/account.model';
 import { DeleteAccountCommandService } from 'src/application/services/account/command/delete-account.command.service';
 import { GetOneAccountByIdQueryService } from 'src/application/services/account/query/get-one-account-by-id.query.service';
+import { DeleteAccountCommandResponseDto } from 'src/application/dtos/account/response/command/delete-account.command.response.dto';
 import { AccountErrorMessagesEnum } from 'src/domain/enums/error-messages/account-error-messages.enum';
 import { BusinessErrorException } from 'src/presentation/exceptions/business-error.exception';
 
@@ -13,7 +14,9 @@ export class DeleteAccountCommandUseCase {
     private readonly getOneAccountByIdQueryService: GetOneAccountByIdQueryService,
     private readonly deleteAccountCommandService: DeleteAccountCommandService,
   ) {}
-  public async execute(accountId: string): Promise<any> {
+  public async execute(
+    accountId: string,
+  ): Promise<DeleteAccountCommandResponseDto> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -30,6 +33,8 @@ export class DeleteAccountCommandUseCase {
       await this.deleteAccountCommandService.execute(queryRunner, accountId);
 
       await queryRunner.commitTransaction();
+
+      return new DeleteAccountCommandResponseDto(true, accountId);
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

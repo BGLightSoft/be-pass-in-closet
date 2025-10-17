@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { LogInDto } from 'src/application/dtos/auth/log-in.dto';
+import { LogInCommandRequestDto } from 'src/application/dtos/auth/request/command/log-in.command.request.dto';
+import { LogInCommandResponseDto } from 'src/application/dtos/auth/response/command/log-in.command.response.dto';
 import { GetAccountByEmailQueryService } from 'src/application/services/account/query/get-account-by-email.query.service';
 import { AccountModel } from 'src/domain/models/account/account.model';
 import { HashService } from 'src/application/services/hash/hash.service';
-import { AccountResponseDto } from 'src/application/dtos/account/response/account-response.dto';
 import { CreateAuthtokensCommandService } from 'src/application/services/account-tokens/command/create-auth-tokens.command.service';
 import { BusinessErrorException } from 'src/presentation/exceptions/business-error.exception';
 import { AccountErrorMessagesEnum } from 'src/domain/enums/error-messages/account-error-messages.enum';
@@ -17,7 +17,9 @@ export class LogInCommandUseCase {
     private readonly hashService: HashService,
     private readonly createAuthtokensCommandService: CreateAuthtokensCommandService,
   ) {}
-  public async execute(body: LogInDto) {
+  public async execute(
+    body: LogInCommandRequestDto,
+  ): Promise<LogInCommandResponseDto> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -48,10 +50,9 @@ export class LogInCommandUseCase {
         email,
       );
 
-      const account = new AccountResponseDto(accountModel);
-
       await queryRunner.commitTransaction();
-      return { account, authTokens };
+
+      return new LogInCommandResponseDto(accountModel, authTokens);
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

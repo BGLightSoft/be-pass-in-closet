@@ -3,7 +3,8 @@ import { DataSource } from 'typeorm';
 import { JwtTokenService } from 'src/application/services/jwt/jwt-token.service';
 import { ISignUpVerifiedToken } from 'src/domain/tokens/sign-up-verified-token.interface';
 import { UpdateAccountCommandService } from 'src/application/services/account/command/update-account.command.service';
-import { SignUpVerifieDto } from 'src/application/dtos/auth/sign-up-verified.dto';
+import { SignUpVerifiedCommandRequestDto } from 'src/application/dtos/auth/request/command/sign-up-verified.command.request.dto';
+import { SignUpVerifiedCommandResponseDto } from 'src/application/dtos/auth/response/command/sign-up-verified.command.response.dto';
 import { GetOtpCodeQueryService } from 'src/application/services/otp/query/get-otp-code.query.service';
 import { OtpCodeModel } from 'src/domain/models/otp/otp-code.model';
 import { OtpCodeTypeEnum } from 'src/domain/enums/otp/otp-code-type.enum';
@@ -24,7 +25,10 @@ export class SignUpVerifiedCommandUseCase {
     private readonly deleteOtpCodeCommandService: DeleteOtpCodeCommandService,
     private readonly deleteTokenByTypeCommandService: DeleteTokenByTypeCommandService,
   ) {}
-  public async execute(body: SignUpVerifieDto, token: string | null) {
+  public async execute(
+    body: SignUpVerifiedCommandRequestDto,
+    token: string | null,
+  ): Promise<SignUpVerifiedCommandResponseDto> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -71,7 +75,7 @@ export class SignUpVerifiedCommandUseCase {
         AccountTokenTypeEnum.SIGN_UP_VERFIED_TOKEN,
       );
 
-      return true;
+      return new SignUpVerifiedCommandResponseDto(true);
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;
