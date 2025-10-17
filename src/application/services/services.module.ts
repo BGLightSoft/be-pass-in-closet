@@ -7,6 +7,7 @@ import { AuthServiceModule } from './auth/auth.service.module';
 import { AccountTokensServiceModule } from './account-tokens/account-tokens.service.module';
 import { NotificationServiceModule } from './notification/notification.service.module';
 import { WorkspaceServiceModule } from './workspace/workspace.service.module';
+import { CredentialGroupServiceModule } from './credential-group/credential-group.service.module';
 
 @Global()
 @Module({
@@ -19,6 +20,7 @@ import { WorkspaceServiceModule } from './workspace/workspace.service.module';
     AccountTokensServiceModule,
     NotificationServiceModule,
     WorkspaceServiceModule,
+    CredentialGroupServiceModule,
   ],
   exports: [
     HashServiceModule,
@@ -29,6 +31,7 @@ import { WorkspaceServiceModule } from './workspace/workspace.service.module';
     AccountTokensServiceModule,
     NotificationServiceModule,
     WorkspaceServiceModule,
+    CredentialGroupServiceModule,
   ],
 })
 export class ServicesModule {}
