@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AccountModel } from 'src/domain/models/account/account.model';
+import { AccountParameterResponseDto } from 'src/application/dtos/account/response/account-parameter.response.dto';
 
 export class LogInCommandResponseDto {
   @ApiProperty({ description: 'Account information' })
@@ -10,7 +11,7 @@ export class LogInCommandResponseDto {
     isFrozen: boolean;
     createdAt: Date;
     updatedAt: Date;
-    accountParameters?: any[];
+    accountParameters?: Record<string, any>;
   };
 
   @ApiProperty({ description: 'Authentication tokens' })
@@ -30,7 +31,9 @@ export class LogInCommandResponseDto {
       isFrozen: accountModel.isFrozen,
       createdAt: accountModel.createdAt,
       updatedAt: accountModel.updatedAt,
-      accountParameters: accountModel.accountParameters,
+      accountParameters: accountModel.accountParameters
+        ? AccountParameterResponseDto.fromModels(accountModel.accountParameters)
+        : undefined,
     };
     this.authTokens = authTokens;
   }
