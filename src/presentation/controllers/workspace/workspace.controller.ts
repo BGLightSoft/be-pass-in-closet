@@ -24,6 +24,8 @@ import { GetWorkspaceQueryResponseDto } from 'src/application/dtos/workspace/res
 import { CreateWorkspaceCommandUseCase } from 'src/application/use-cases/workspace/command/create-workspace.command.use-case';
 import { UpdateWorkspaceCommandUseCase } from 'src/application/use-cases/workspace/command/update-workspace.command.use-case';
 import { DeleteWorkspaceCommandUseCase } from 'src/application/use-cases/workspace/command/delete-workspace.command.use-case';
+import { SetDefaultWorkspaceCommandUseCase } from 'src/application/use-cases/workspace/command/set-default-workspace.command.use-case';
+import { SetDefaultWorkspaceCommandRequestDto } from 'src/application/dtos/workspace/request/command/set-default-workspace.command.request.dto';
 import { GetUserWorkspacesQueryUseCase } from 'src/application/use-cases/workspace/query/get-user-workspaces.query.use-case';
 import { AccountId } from 'src/presentation/decorators/account-id.decorator';
 import { AccessTokenGuard } from 'src/presentation/quards/auth/access-token.guard';
@@ -37,6 +39,7 @@ export class WorkspaceController {
     private readonly createWorkspaceCommandUseCase: CreateWorkspaceCommandUseCase,
     private readonly updateWorkspaceCommandUseCase: UpdateWorkspaceCommandUseCase,
     private readonly deleteWorkspaceCommandUseCase: DeleteWorkspaceCommandUseCase,
+    private readonly setDefaultWorkspaceCommandUseCase: SetDefaultWorkspaceCommandUseCase,
     private readonly getUserWorkspacesQueryUseCase: GetUserWorkspacesQueryUseCase,
   ) {}
 
@@ -94,5 +97,18 @@ export class WorkspaceController {
     @Param('workspaceId') workspaceId: string,
   ): Promise<DeleteWorkspaceCommandResponseDto> {
     return this.deleteWorkspaceCommandUseCase.execute(accountId, workspaceId);
+  }
+
+  @ApiOperation({ summary: 'Set workspace as default' })
+  @ApiOkResponse({
+    description: 'Workspace set as default successfully',
+  })
+  @Patch(':workspaceId/set-default')
+  public async setDefaultWorkspace(
+    @AccountId() accountId: string,
+    @Param('workspaceId') workspaceId: string,
+  ): Promise<void> {
+    const dto: SetDefaultWorkspaceCommandRequestDto = { workspaceId };
+    return this.setDefaultWorkspaceCommandUseCase.execute(accountId, dto);
   }
 }

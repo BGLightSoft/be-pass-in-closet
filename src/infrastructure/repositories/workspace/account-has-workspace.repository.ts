@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 import { AccountHasWorkspaceModel } from 'src/domain/models/workspace/account-has-workspace.model';
 import { IAccountHasWorkspaceRepository } from 'src/domain/repositories/workspace/account-has-workspace.repository.interface';
 import { AccountHasWorkspaces } from 'src/infrastructure/database/postgres/entities/AccountHasWorkspaces';
@@ -38,5 +38,30 @@ export class AccountHasWorkspaceRepository
       workspaceId,
     });
     return entity ? this.mapper.toDomain(entity) : null;
+  }
+
+  async updateDefaultStatus(
+    accountId: string,
+    workspaceId: string,
+    isDefault: boolean,
+    queryRunner?: QueryRunner,
+  ): Promise<void> {
+    const repo = queryRunner
+      ? queryRunner.manager.getRepository(AccountHasWorkspaces)
+      : this.repository;
+
+    await repo.update({ accountId, workspaceId }, { isDefault });
+  }
+
+  async updateDefaultStatusByAccount(
+    accountId: string,
+    isDefault: boolean,
+    queryRunner?: QueryRunner,
+  ): Promise<void> {
+    const repo = queryRunner
+      ? queryRunner.manager.getRepository(AccountHasWorkspaces)
+      : this.repository;
+
+    await repo.update({ accountId }, { isDefault });
   }
 }
