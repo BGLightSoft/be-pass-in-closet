@@ -26,6 +26,8 @@ import { CreateCredentialCommandUseCase } from 'src/application/use-cases/creden
 import { UpdateCredentialCommandUseCase } from 'src/application/use-cases/credential/command/update-credential.command.use-case';
 import { DeleteCredentialCommandUseCase } from 'src/application/use-cases/credential/command/delete-credential.command.use-case';
 import { GetCredentialsByGroupQueryUseCase } from 'src/application/use-cases/credential/query/get-credentials-by-group.query.use-case';
+import { GetCredentialParameterListByTypeQueryUseCase } from 'src/application/use-cases/credential/query/get-credential-parameter-list-by-type.query.use-case';
+import { GetCredentialParameterListQueryResponseDto } from 'src/application/dtos/credential/response/query/get-credential-parameter-list.query.response.dto';
 import { WorkspaceId } from 'src/presentation/decorators/workspace-id.decorator';
 import { AccessTokenGuard } from 'src/presentation/quards/auth/access-token.guard';
 
@@ -44,6 +46,7 @@ export class CredentialController {
     private readonly updateCredentialCommandUseCase: UpdateCredentialCommandUseCase,
     private readonly deleteCredentialCommandUseCase: DeleteCredentialCommandUseCase,
     private readonly getCredentialsByGroupQueryUseCase: GetCredentialsByGroupQueryUseCase,
+    private readonly getCredentialParameterListByTypeQueryUseCase: GetCredentialParameterListByTypeQueryUseCase,
   ) {}
 
   @ApiOperation({ summary: 'Create a new credential' })
@@ -74,6 +77,22 @@ export class CredentialController {
     return this.getCredentialsByGroupQueryUseCase.execute(
       workspaceId,
       credentialGroupId,
+    );
+  }
+
+  @ApiOperation({
+    summary: 'Get parameter list (template) for a credential group type',
+  })
+  @ApiOkResponse({
+    description: 'Parameter list retrieved successfully',
+    type: [GetCredentialParameterListQueryResponseDto],
+  })
+  @Get('parameter-list/:credentialGroupTypeId')
+  public async getParameterListByType(
+    @Param('credentialGroupTypeId') credentialGroupTypeId: string,
+  ): Promise<GetCredentialParameterListQueryResponseDto[]> {
+    return this.getCredentialParameterListByTypeQueryUseCase.execute(
+      credentialGroupTypeId,
     );
   }
 

@@ -3,8 +3,12 @@ import { CreateCredentialCommandUseCase } from './command/create-credential.comm
 import { UpdateCredentialCommandUseCase } from './command/update-credential.command.use-case';
 import { DeleteCredentialCommandUseCase } from './command/delete-credential.command.use-case';
 import { GetCredentialsByGroupQueryUseCase } from './query/get-credentials-by-group.query.use-case';
+import { GetCredentialParameterListByTypeQueryUseCase } from './query/get-credential-parameter-list-by-type.query.use-case';
 
-const query = [GetCredentialsByGroupQueryUseCase];
+const query = [
+  GetCredentialsByGroupQueryUseCase,
+  GetCredentialParameterListByTypeQueryUseCase,
+];
 
 const command = [
   CreateCredentialCommandUseCase,
