@@ -7,6 +7,9 @@ export interface ICredentialRepository
   findByCredentialGroupId(
     credentialGroupId: string,
   ): Promise<CredentialModel[]>;
+  countByCredentialGroupIds(
+    credentialGroupIds: string[],
+  ): Promise<Map<string, number>>;
 }
 
 export const ICredentialRepository = Symbol('ICredentialRepository');
