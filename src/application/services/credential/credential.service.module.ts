@@ -3,6 +3,7 @@ import { CreateCredentialCommandService } from './command/create-credential.comm
 import { CreateCredentialParameterCommandService } from './command/create-credential-parameter.command.service';
 import { UpdateCredentialCommandService } from './command/update-credential.command.service';
 import { UpdateCredentialParameterCommandService } from './command/update-credential-parameter.command.service';
+import { UpdateCredentialIndexesCommandService } from './command/update-credential-indexes.command.service';
 import { DeleteCredentialCommandService } from './command/delete-credential.command.service';
 import { GetCredentialByIdQueryService } from './query/get-credential-by-id.query.service';
 import { GetCredentialsByGroupQueryService } from './query/get-credentials-by-group.query.service';
@@ -19,6 +20,7 @@ const command = [
   CreateCredentialParameterCommandService,
   UpdateCredentialCommandService,
   UpdateCredentialParameterCommandService,
+  UpdateCredentialIndexesCommandService,
   DeleteCredentialCommandService,
   DeleteCredentialParametersCommandService,
   DeleteCredentialsByGroupCommandService,

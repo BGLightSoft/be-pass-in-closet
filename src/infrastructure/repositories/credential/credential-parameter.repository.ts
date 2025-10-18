@@ -21,4 +21,26 @@ export class CredentialParameterRepository
     const entities = await this.repository.findBy({ credentialId });
     return entities.map((entity) => this.mapper.toDomain(entity));
   }
+
+  async updateCredentialIndexes(
+    credentialGroupId: string,
+    credentialIndexes: Array<{ credentialId: string; index: number }>,
+  ): Promise<void> {
+    if (credentialIndexes.length === 0) return;
+
+    // Update index parameters for each credential
+    for (const { credentialId, index } of credentialIndexes) {
+      await this.repository.query(
+        `
+        UPDATE credential_parameters 
+        SET data = jsonb_set(data, '{value}', $1::jsonb),
+            updated_at = NOW()
+        WHERE credential_id = $2 
+          AND name = 'index'
+          AND deleted_at IS NULL
+        `,
+        [`"${index}"`, credentialId],
+      );
+    }
+  }
 }

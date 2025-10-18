@@ -6,6 +6,7 @@ import { CreateCredentialCommandService } from 'src/application/services/credent
 import { CreateCredentialParameterCommandService } from 'src/application/services/credential/command/create-credential-parameter.command.service';
 import { GetCredentialGroupByIdQueryService } from 'src/application/services/credential-group/query/get-credential-group-by-id.query.service';
 import { GetCredentialParameterListByTypeQueryService } from 'src/application/services/credential/query/get-credential-parameter-list-by-type.query.service';
+import { GetCredentialsByGroupQueryService } from 'src/application/services/credential/query/get-credentials-by-group.query.service';
 import { BusinessErrorException } from 'src/presentation/exceptions/business-error.exception';
 import { CredentialGroupErrorMessagesEnum } from 'src/domain/enums/error-messages/credential-group-error-messages.enum';
 import { CredentialModel } from 'src/domain/models/credential/credential.model';
@@ -19,6 +20,7 @@ export class CreateCredentialCommandUseCase {
     private readonly createCredentialParameterCommandService: CreateCredentialParameterCommandService,
     private readonly getCredentialGroupByIdQueryService: GetCredentialGroupByIdQueryService,
     private readonly getCredentialParameterListByTypeQueryService: GetCredentialParameterListByTypeQueryService,
+    private readonly getCredentialsByGroupQueryService: GetCredentialsByGroupQueryService,
   ) {}
 
   public async execute(
@@ -30,7 +32,6 @@ export class CreateCredentialCommandUseCase {
     await queryRunner.startTransaction();
 
     try {
-      // Get credential group
       const credentialGroup =
         await this.getCredentialGroupByIdQueryService.execute(
           body.credentialGroupId,
@@ -42,14 +43,12 @@ export class CreateCredentialCommandUseCase {
         );
       }
 
-      // Check if group belongs to workspace
       if (credentialGroup.workspaceId !== workspaceId) {
         throw new BusinessErrorException(
           CredentialGroupErrorMessagesEnum.CREDENTIAL_GROUP_ACCESS_DENIED,
         );
       }
 
-      // Get credential group type ID
       const credentialGroupTypeId = credentialGroup.credentialGroupTypeId;
 
       if (!credentialGroupTypeId) {
@@ -58,13 +57,11 @@ export class CreateCredentialCommandUseCase {
         );
       }
 
-      // Get parameter list template for this group type
       const parameterListTemplates =
         await this.getCredentialParameterListByTypeQueryService.execute(
           credentialGroupTypeId,
         );
 
-      // Create credential
       const credentialData: Partial<CredentialModel> = {
         credentialGroupId: body.credentialGroupId,
         name: body.name,
@@ -76,21 +73,28 @@ export class CreateCredentialCommandUseCase {
         credentialData,
       );
 
-      // Process and create credential parameters
+      const existingCredentials =
+        await this.getCredentialsByGroupQueryService.execute(
+          body.credentialGroupId,
+        );
+      const nextIndex = existingCredentials.length;
+
       for (const template of parameterListTemplates) {
         const parameterName = template.name;
-        let parameterData = template.data; // Default template data
 
-        // Check if parameter value provided in request
+        if (parameterName === 'index') {
+          continue;
+        }
+
+        let parameterData = template.data;
+
         if (parameterName && body.parameters[parameterName] !== undefined) {
-          // Update template data with provided value
           parameterData = {
             ...template.data,
             value: body.parameters[parameterName],
           };
         }
 
-        // Create credential parameter
         const credentialParameter: Partial<CredentialParameterModel> = {
           credentialId: credential.id!,
           name: parameterName,
@@ -103,6 +107,18 @@ export class CreateCredentialCommandUseCase {
           credentialParameter,
         );
       }
+
+      const indexParameter: Partial<CredentialParameterModel> = {
+        credentialId: credential.id!,
+        name: 'index',
+        data: { value: nextIndex.toString() },
+        isActive: true,
+      };
+
+      await this.createCredentialParameterCommandService.execute(
+        queryRunner,
+        indexParameter,
+      );
 
       await queryRunner.commitTransaction();
 

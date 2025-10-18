@@ -20,10 +20,12 @@ import { CreateCredentialCommandRequestDto } from 'src/application/dtos/credenti
 import { CreateCredentialCommandResponseDto } from 'src/application/dtos/credential/response/command/create-credential.command.response.dto';
 import { UpdateCredentialCommandRequestDto } from 'src/application/dtos/credential/request/command/update-credential.command.request.dto';
 import { UpdateCredentialCommandResponseDto } from 'src/application/dtos/credential/response/command/update-credential.command.response.dto';
+import { UpdateCredentialOrderRequestDto } from 'src/application/dtos/credential/request/command/update-credential-order.command.request.dto';
 import { DeleteCredentialCommandResponseDto } from 'src/application/dtos/credential/response/command/delete-credential.command.response.dto';
 import { GetCredentialQueryResponseDto } from 'src/application/dtos/credential/response/query/get-credential.query.response.dto';
 import { CreateCredentialCommandUseCase } from 'src/application/use-cases/credential/command/create-credential.command.use-case';
 import { UpdateCredentialCommandUseCase } from 'src/application/use-cases/credential/command/update-credential.command.use-case';
+import { UpdateCredentialOrderCommandUseCase } from 'src/application/use-cases/credential/command/update-credential-order.command.use-case';
 import { DeleteCredentialCommandUseCase } from 'src/application/use-cases/credential/command/delete-credential.command.use-case';
 import { GetCredentialsByGroupQueryUseCase } from 'src/application/use-cases/credential/query/get-credentials-by-group.query.use-case';
 import { GetCredentialParameterListByTypeQueryUseCase } from 'src/application/use-cases/credential/query/get-credential-parameter-list-by-type.query.use-case';
@@ -44,6 +46,7 @@ export class CredentialController {
   constructor(
     private readonly createCredentialCommandUseCase: CreateCredentialCommandUseCase,
     private readonly updateCredentialCommandUseCase: UpdateCredentialCommandUseCase,
+    private readonly updateCredentialOrderCommandUseCase: UpdateCredentialOrderCommandUseCase,
     private readonly deleteCredentialCommandUseCase: DeleteCredentialCommandUseCase,
     private readonly getCredentialsByGroupQueryUseCase: GetCredentialsByGroupQueryUseCase,
     private readonly getCredentialParameterListByTypeQueryUseCase: GetCredentialParameterListByTypeQueryUseCase,
@@ -110,6 +113,23 @@ export class CredentialController {
     return this.updateCredentialCommandUseCase.execute(
       workspaceId,
       credentialId,
+      body,
+    );
+  }
+
+  @ApiOperation({ summary: 'Update credential order' })
+  @ApiOkResponse({
+    description: 'Credential order updated successfully',
+  })
+  @Patch('group/:credentialGroupId/order')
+  public async updateCredentialOrder(
+    @WorkspaceId() workspaceId: string,
+    @Param('credentialGroupId') credentialGroupId: string,
+    @Body() body: UpdateCredentialOrderRequestDto,
+  ): Promise<void> {
+    return this.updateCredentialOrderCommandUseCase.execute(
+      workspaceId,
+      credentialGroupId,
       body,
     );
   }

@@ -5,6 +5,10 @@ import { CredentialParameters } from 'src/infrastructure/database/postgres/entit
 export interface ICredentialParameterRepository
   extends IBaseRepository<CredentialParameters, CredentialParameterModel> {
   findByCredentialId(credentialId: string): Promise<CredentialParameterModel[]>;
+  updateCredentialIndexes(
+    credentialGroupId: string,
+    credentialIndexes: Array<{ credentialId: string; index: number }>,
+  ): Promise<void>;
 }
 
 export const ICredentialParameterRepository = Symbol(

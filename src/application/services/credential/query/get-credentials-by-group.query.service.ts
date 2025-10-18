@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CredentialModel } from 'src/domain/models/credential/credential.model';
 import { ICredentialRepository } from 'src/domain/repositories/credential/credential.repository.interface';
+import { CredentialModel } from 'src/domain/models/credential/credential.model';
 
 @Injectable()
 export class GetCredentialsByGroupQueryService {

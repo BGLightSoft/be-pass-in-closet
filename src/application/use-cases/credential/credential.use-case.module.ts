@@ -4,6 +4,7 @@ import { UpdateCredentialCommandUseCase } from './command/update-credential.comm
 import { DeleteCredentialCommandUseCase } from './command/delete-credential.command.use-case';
 import { GetCredentialsByGroupQueryUseCase } from './query/get-credentials-by-group.query.use-case';
 import { GetCredentialParameterListByTypeQueryUseCase } from './query/get-credential-parameter-list-by-type.query.use-case';
+import { UpdateCredentialOrderCommandUseCase } from './command/update-credential-order.command.use-case';
 
 const query = [
   GetCredentialsByGroupQueryUseCase,
@@ -14,6 +15,7 @@ const command = [
   CreateCredentialCommandUseCase,
   UpdateCredentialCommandUseCase,
   DeleteCredentialCommandUseCase,
+  UpdateCredentialOrderCommandUseCase,
 ];
 
 @Module({

@@ -18,7 +18,28 @@ export class CredentialRepository
   async findByCredentialGroupId(
     credentialGroupId: string,
   ): Promise<CredentialModel[]> {
-    const entities = await this.repository.findBy({ credentialGroupId });
+    // Use raw query with JOIN to sort by index parameter
+    const entities = await this.repository
+      .createQueryBuilder('credential')
+      .addSelect((subQuery) => {
+        return subQuery
+          .select(
+            "CAST(COALESCE(cp.data->>'value', '999999') AS INTEGER)",
+            'index_value',
+          )
+          .from('credential_parameters', 'cp')
+          .where('cp.credential_id = credential.id')
+          .andWhere("cp.name = 'index'")
+          .andWhere('cp.deleted_at IS NULL')
+          .limit(1);
+      }, 'index_value')
+      .where('credential.credential_group_id = :credentialGroupId', {
+        credentialGroupId,
+      })
+      .andWhere('credential.deleted_at IS NULL')
+      .orderBy('index_value', 'ASC')
+      .getMany();
+
     return entities.map((entity) => this.mapper.toDomain(entity));
   }
 
