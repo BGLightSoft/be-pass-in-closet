@@ -11,6 +11,7 @@ export class CredentialGroupMapper
     return new CredentialGroupModel({
       id: entity.id,
       credentialGroupTypeId: entity.credentialGroupTypeId,
+      credentialGroupTypeName: entity.credentialGroupType?.name,
       credentialGroupId: entity.credentialGroupId,
       workspaceId: entity.workspaceId,
       name: entity.name,

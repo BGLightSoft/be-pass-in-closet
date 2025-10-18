@@ -1,6 +1,7 @@
 export class CredentialGroupModel {
   public readonly id?: string;
   public readonly credentialGroupTypeId: string | null;
+  public readonly credentialGroupTypeName?: string | null;
   public readonly credentialGroupId: string | null;
   public readonly workspaceId: string;
   public readonly name: string | null;
@@ -12,6 +13,7 @@ export class CredentialGroupModel {
   constructor(props: Partial<CredentialGroupModel> = {}) {
     this.id = props.id;
     this.credentialGroupTypeId = props.credentialGroupTypeId ?? null;
+    this.credentialGroupTypeName = props.credentialGroupTypeName;
     this.credentialGroupId = props.credentialGroupId ?? null;
     this.workspaceId = props.workspaceId!;
     this.name = props.name ?? null;

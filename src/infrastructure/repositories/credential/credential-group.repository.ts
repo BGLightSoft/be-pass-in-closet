@@ -18,7 +18,10 @@ export class CredentialGroupRepository
   async findByWorkspaceId(
     workspaceId: string,
   ): Promise<CredentialGroupModel[]> {
-    const entities = await this.repository.findBy({ workspaceId });
+    const entities = await this.repository.find({
+      where: { workspaceId },
+      relations: ['credentialGroupType'],
+    });
     return entities.map((entity) => this.mapper.toDomain(entity));
   }
 
