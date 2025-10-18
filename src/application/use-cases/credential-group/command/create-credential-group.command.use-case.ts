@@ -77,7 +77,13 @@ export class CreateCredentialGroupCommandUseCase {
 
       await queryRunner.commitTransaction();
 
-      return new CreateCredentialGroupCommandResponseDto(credentialGroup);
+      // For new groups, credential counts are always 0
+      return new CreateCredentialGroupCommandResponseDto(
+        credentialGroup,
+        0, // credentialCount
+        0, // totalCredentialCount
+        credentialGroupType.name, // credentialGroupTypeName
+      );
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

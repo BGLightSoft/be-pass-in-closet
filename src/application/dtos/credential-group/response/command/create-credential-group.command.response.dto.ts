@@ -8,6 +8,9 @@ export class CreateCredentialGroupCommandResponseDto {
   @ApiProperty()
   credentialGroupTypeId: string | null;
 
+  @ApiProperty({ required: false })
+  credentialGroupTypeName?: string | null;
+
   @ApiProperty()
   credentialGroupId: string | null;
 
@@ -26,14 +29,28 @@ export class CreateCredentialGroupCommandResponseDto {
   @ApiProperty()
   updatedAt: Date;
 
-  constructor(model: CredentialGroupModel) {
+  @ApiProperty()
+  credentialCount: number;
+
+  @ApiProperty()
+  totalCredentialCount: number;
+
+  constructor(
+    model: CredentialGroupModel,
+    credentialCount: number = 0,
+    totalCredentialCount: number = 0,
+    credentialGroupTypeName?: string | null,
+  ) {
     this.id = model.id!;
     this.credentialGroupTypeId = model.credentialGroupTypeId;
+    this.credentialGroupTypeName = credentialGroupTypeName;
     this.credentialGroupId = model.credentialGroupId;
     this.workspaceId = model.workspaceId;
     this.name = model.name;
     this.isActive = model.isActive;
     this.createdAt = model.createdAt;
     this.updatedAt = model.updatedAt;
+    this.credentialCount = credentialCount;
+    this.totalCredentialCount = totalCredentialCount;
   }
 }
